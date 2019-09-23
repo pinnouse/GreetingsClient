@@ -1,0 +1,294 @@
+body {
+    color: white;
+    font-family: sans-serif;
+}
+
+/**********
+* GENERAL *
+**********/
+
+input:focus {
+    outline: none;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    position: relative;
+    color: #fff;
+    padding: 4px;
+    background: #25375e20;
+    border: none;
+    border-bottom: 2px solid;
+    border-bottom-color: #25375e;
+    transition: 120ms;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+select:hover {
+    background: #25375e40;
+    border-bottom-color: #2c3446;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    background: #25375e80;
+    border-bottom-color: #fff;
+}
+
+input[type="number"] {
+    width: 52px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+}
+
+select option {
+    background: #25375e;
+}
+
+.hoverable {
+    cursor: pointer;
+    color: #fff;
+    background: none;
+    padding: 4px;
+    border-radius: 6px;
+    transition: 340ms background;
+}
+
+.hoverable:hover {
+    background: #ffffff38;
+}
+
+.container {
+    max-width: 80vw;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    padding: 12px;
+    transition: 200ms;
+}
+
+.modal {
+    z-index: 1000;
+    background: #d3d6df94;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw;
+    height: 100vh; 
+    padding: 0; 
+    text-align: center;
+}
+
+.modal .modalBody {
+    width: 600px;
+    padding: 40px;
+    background: #2c3446;
+    border-radius: 12px;
+    color: #fff;
+    margin: 0 auto;
+    word-wrap: break-word;
+}
+
+.modal .close {
+    background: #465577;
+    color: #c7d0e2;
+    border: none;
+    margin-top: 12px;
+    padding: 7px;
+    border-radius: 6px;
+    font-size: 1.34em;
+    transition: 340ms;
+}
+
+.modal .close:hover {
+    cursor: pointer;
+    background: #c7d0e28c;
+}
+
+/************
+*  SPECIFIC *
+*************/
+
+.filePicker {
+    width: 100%;
+    text-align: center;
+    margin: 10px auto;
+}
+
+.fileButton {
+    display: inline-block;
+    position: relative;
+    padding: 18px;
+    background: #526ba1;
+}
+
+#editContainer {
+    position: relative;
+    display: inline-block;
+    width: 600px;
+    overflow-x: hidden;
+    padding: 12px;
+    text-align: center;
+}
+
+#editContainer > img#backgroundPreview {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 600px;
+    pointer-events: none;
+    user-select: none;
+}
+
+img.noImage {
+    visibility: hidden;
+}
+
+#editContainer label {
+    position: absolute;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.movable {
+    user-select: none;
+}
+
+.movable:hover {
+    outline: 2px dotted #3765ca;
+    outline-offset: 2px;
+    cursor: grab;
+}
+
+#textBoxes {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 600px;
+}
+
+#editContainer > img#avatarPreview {
+    position: absolute;
+}
+
+#rightBar {
+    width: 40%;
+    padding: 12px;
+}
+
+.box {
+    display: block;
+    background: #526ba1;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 0 0 20px 0;
+    max-height: 420px; /* nice */
+    overflow-y: auto;
+}
+
+.box.withInner {
+    display: flex;
+}
+
+.innerBox {
+    margin: 0 20px;
+}
+
+#textProperties span {
+    display: inline-block;
+    margin: 8px 0;
+}
+
+#addLayer {
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#addLayer:focus {
+    outline: none;
+}
+
+#layers {
+    display: block;
+    padding: 0;
+    margin: 0;
+    height: 300px;
+    overflow-y: auto;
+}
+
+.layer {
+    position: relative;
+    display: block;
+    margin-top: 13px;
+    margin-right: 12px;
+    padding: 3px 8px 3px 24px;
+    user-select: none;
+}
+
+.layer:nth-child(n+2)::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #fff;
+    pointer-events: none;
+}
+
+.layer span {
+    display: block;
+    padding: 12px 4px;
+    margin-right: 36px;
+}
+
+.layer .delete {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    height: 24px;
+    width: 24px;
+    text-align: center;
+    vertical-align: bottom;
+    font-weight: bold;
+    font-size: 24px;
+    color: #ccc;
+    transition: 230ms;
+    background: none;
+    border: none;
+}
+
+.layer .delete:hover {
+    color: #fff;
+}
+
+@media only screen and (max-width: 1349px) {
+    div#editContainer {
+        overflow-x: unset;
+    }
+
+    div#editContainer #backgroundPreview {
+        position: relative;
+        margin-top: -12px;
+        margin-left: -24px;
+    }
+}

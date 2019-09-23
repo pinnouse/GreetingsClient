@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <div id="editor" class="container">
+        <div class="filePicker">
+            <input id="bgFile" type="file" accept="image/*" @change="changeFile">
+            <span class="fileButton hoverable" data-button-id="bgFile">Choose a background...</span>
+            <input id="fontFile" type="file" accept=".ttf" @change="addFont">
+            <span class="fileButton hoverable" data-button-id="fontFile">Upload a font...</span>
+        </div>
+        <div id="editContainer"
+            @mousemove="move($event)"
+            @mouseup="stopMove"
+            @mouseleave="stopMove">
+            <img id="backgroundPreview" unselectable="on" :src="bgSrc" alt="background" onerror="$(this).addClass('noImage')" />
+            <img id="avatarPreview"
+            src="https://cdn.discordapp.com/embed/avatars/0.png"
+            class="movable"
+            :width="avatar.size / 2"
+            :height="avatar.size / 2"
+            :style="{
+                top: avatar.position.y / 2 + 12 + 'px',
+                left: avatar.position.x / 2 + 12 + 'px'
+            }"
+            @mousedown="startMove($event, -1)" />
+            <div id="textBoxes">
+                <label v-for="(layer, index) in layers"
+                :style="{
+                    top: layer.textPosition.y/2 + 'px',
+                    left: layer.textPosition.x/2 + 'px',
+                    color: layer.fontColor,
+                    fontWeight: (layer.fontStyle & 1) ? 'bold' : 'normal',
+                    fontStyle: (layer.fontStyle & 2) ? 'italic' : 'normal',
+                    fontSize: layer.fontSize / 2 + 'px'
+                }"
+                @mousedown="startMove($event, index)">
+                    <span
+                    class="movable"
+                    :style="{
+                        position: 'absolute',
+                        bottom: '100%',
+                        left: {LEFT: '0', CENTER: '-50%', RIGHT: '-100%'}[layer.alignment],
+                        fontFamily: '\'' + layer.fontUrl + '\''
+                    }">
+                        {{ parseMoustache(layer.text) }}
+                    </span>
+                    <span style="position: relative; visibility: hidden;">
+                        {{ parseMoustache(layer.text) }}
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div id="rightBar">
+            <div id="textProperties" class="box withInner">
+                <div class="innerBox">
+                    <h2>Avatar</h2>
+                    <span>X: <input type="number" v-model="avatar.position.x"></span>
+                    <span>Y: <input type="number" v-model="avatar.position.y"></span>
+                    <br />
+                    <span>Size: <input type="number" v-model="avatar.size"></span>
+                </div>
+                <div class="innerBox">
+
+                    <h2>Text Properties</h2>
+                    <div v-if="activeLayer < 0">Please select a text layer.</div>
+                    <div v-else>
+                        <h3>Layer: {{ activeLayer + 1 }}</h3>
+                        <span>X: <input type="number" v-model="layers[activeLayer].textPosition.x"></span>
+                        <span>Y: <input type="number" v-model="layers[activeLayer].textPosition.y"></span>
+                        <br />
+                        <span>
+                            Text:
+                            <input type="text" size="20" v-model="layers[activeLayer].text">
+                        </span>
+                        <br />
+                        <color-picker :width="90" :height="90" v-model="layers[activeLayer].fontColor" style="display: inline-block;"></color-picker>
+                        <svg width="22" height="22" style="vertical-align: middle;">
+                            <circle cx="11" cy="10" r="8" :fill="layers[activeLayer].fontColor"></circle>
+                        </svg>
+                        <input type="text" v-model="layers[activeLayer].fontColor">
+                        <br />
+                        <span>Size: <input type="text" v-model="layers[activeLayer].fontSize"></span>
+                        <br />
+                        <span>Font:
+                            <select v-model="layers[activeLayer].fontUrl">
+                                <option v-for="font in fonts">{{ font }}</option>
+                            </select>
+                        </span>
+                        <br />
+                        <span>
+                            Align:
+                            <select v-model="layers[activeLayer].alignment">
+                                <option value="LEFT">Left</option>
+                                <option value="CENTER">Center</option>
+                                <option value="RIGHT">Right</option>
+                            </select>
+                            Style:
+                            <select v-model="layers[activeLayer].fontStyle">
+                                <option value="0">Plain</option>
+                                <option value="1">Bold</option>
+                                <option value="2">Italic</option>
+                                <option value="3">B + I</option>
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="layersBox" class="box">
+                <h2>Text Layers</h2>
+                <button id="addLayer" class="hoverable" @click="addLayer">Add Layer +</button>
+                <ul id="layers">
+                    <li class="layer"
+                        is="text-layer-item"
+                        v-for="(layer, index) in layers"
+                        :key="index"
+                        :text="layer.text"
+                        :index="index"
+                        @edit="edit(index)"
+                        @remove="remove(index)">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <modal v-if="modalVisible" :message="modalMessage" @close="modalVisible = false"></modal>
+    </div>
+    <button class="fileButton hoverable" onclick="vm.showModal(JSON.stringify(exportData()));">Finished</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-color-picker-wheel"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
