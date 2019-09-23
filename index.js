@@ -195,6 +195,23 @@ var vm = new Vue({
       this.modalMessage = message;
       this.modalVisible = true;
     }
+  },
+  computed: {
+    exportData: function() {
+      return {
+        width: 1200,
+        height: $('#backgroundPreview').height(),
+        avatar: this.avatar,
+        textPositions: this.layers
+      };
+    },
+    exportFiles: function() {
+      return {
+        background: this.bgSrc,
+        fonts: this.fontData
+      };
+
+    }
   }
 });
 
@@ -209,22 +226,6 @@ $(function () {
     }
   });
 });
-
-function exportData() {
-  return {
-    width: 1200,
-    height: $('#backgroundPreview').height(),
-    avatar: vm.avatar,
-    textPositions: vm.layers
-  };
-}
-
-function exportFiles() {
-  return {
-    background: vm.bgSrc,
-    fonts: vm.fontData
-  }
-}
 
 /* Schema:
 {

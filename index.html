@@ -131,6 +131,9 @@
             </div>
         </div>
         <modal v-if="modalVisible" :message="modalMessage" @close="modalVisible = false"></modal>
+        <input type="hidden" name="textData" :value="exportData">
+        <input type="hidden" name="bgData" :value="bgSrc">
+        <input type="hidden" v-for="font in fontData" :name="'font:' + font.name" :value="font.data">
     </div>
     <button class="fileButton hoverable" onclick="vm.showModal(JSON.stringify(exportData()));">Finished</button>
 
