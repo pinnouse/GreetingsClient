@@ -69,7 +69,7 @@ select option {
 }
 
 .hoverable:hover {
-    background: #ffffff38;
+    background: #97aabb79;
 }
 
 .container {
@@ -138,6 +138,7 @@ select option {
     position: relative;
     padding: 18px;
     background: #526ba1;
+    border: none;
 }
 
 #editContainer {
