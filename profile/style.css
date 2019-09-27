@@ -73,7 +73,7 @@ select option {
 }
 
 .container {
-    max-width: 80vw;
+    max-width: 85vw;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;

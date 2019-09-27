@@ -1,5 +1,8 @@
 'use strict';
 
+let canvas = document.createElement('canvas');
+let ctx = canvas.getContext('2d');
+
 Vue.component('text-layer-item', {
   template: '\
     <li>\
@@ -27,6 +30,7 @@ var vm = new Vue({
   el: '#editor',
   data: {
     bgSrc: "https://cdn.zerotwo.dev/INTERNAL/GREETING/welcome_blank.png",
+    exportSrc: "",
     layers: [
       {
         text: '{{userTag}}',
@@ -104,6 +108,14 @@ var vm = new Vue({
         vm.bgSrc = fr.result;
       }, false);
       fr.readAsDataURL(event.target.files[0]);
+    },
+    loadedImage() {
+      canvas.width = 1200;
+      canvas.height = $('#backgroundPreview').height() * 2;
+
+      ctx.drawImage(img, 0, 0, 1200, $('#backgroundPreview').height() * 2);
+
+      this.exportSrc = canvas.toDataURL();
     },
     addFont(event) {
       if (event.target.files.length <= 0 && !/\.ttf$/i.test(event.target.files[0].name)) return;
@@ -200,14 +212,14 @@ var vm = new Vue({
     exportData: function() {
       return {
         width: 1200,
-        height: $('#backgroundPreview').height(),
+        height: Math.round($('#backgroundPreview').height() * 2),
         avatar: this.avatar,
         textPositions: this.layers
       };
     },
     exportFiles: function() {
       return {
-        background: this.bgSrc,
+        background: this.exportSrc || this.bgSrc,
         fonts: this.fontData
       };
 
