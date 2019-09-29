@@ -54,7 +54,11 @@
                     }">
                         {{ parseMoustache(layer.text) }}
                     </span>
-                    <span style="position: relative; visibility: hidden;">
+                    <span :style="{
+                        position: 'relative',
+                        visibility: 'hidden',
+                        fontFamily: '\'' + layer.fontUrl + '\''
+                    }">
                         {{ parseMoustache(layer.text) }}
                     </span>
                 </label>
@@ -94,7 +98,7 @@
                         <br />
                         <span>Font:
                             <select v-model="layers[activeLayer].fontUrl">
-                                <option v-for="font in fonts">{{ font }}</option>
+                                <option v-for="font in fonts" :value="font">{{ font.replace("-font", "") }}</option>
                             </select>
                         </span>
                         <br />
@@ -134,7 +138,7 @@
             </div>
         </div>
         <modal v-if="modalVisible" :message="modalMessage" @close="modalVisible = false"></modal>
-        <input type="hidden" name="greetingsData" :value="exportData">
+        <input type="hidden" name="greetingsData" :value="JSON.stringify(exportData)">
         <input type="hidden" name="bgData" :value="bgSrc">
         <input type="hidden" name="fonts" :value="JSON.stringify(fontData)">
     </div>

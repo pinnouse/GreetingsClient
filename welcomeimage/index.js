@@ -131,7 +131,7 @@ var vm = new Vue({
       let fr = new FileReader();
       
       fr.addEventListener('load', function() {
-        let fontName = event.target.files[0].name.replace(/\.ttf$/i, "");
+        let fontName = event.target.files[0].name.replace(/\.ttf$/i, "") + "-font";
         event.target.value = "";
         if (vm.fonts.indexOf(fontName) >= 0) {
           vm.showModal('Font with that name already exists.');
@@ -222,15 +222,11 @@ var vm = new Vue({
   },
   computed: {
     exportData: function() {
-      let exportLayers = this.layers;
-      exportLayers.forEach(layerData => {
-        layerData.fontUrl = `%${layerData.fontUrl}%`;
-      });
       return {
         width: 1200,
         height: Math.round($('#backgroundPreview').height() * 2),
         avatar: this.avatar,
-        textPositions: exportLayers
+        textPositions: this.layers
       };
     },
     exportFiles: function() {
@@ -254,6 +250,10 @@ $(function () {
     }
   });
 });
+
+function importSettings(str) {
+  let importSettings = JSON.parse(str);
+}
 
 /* Schema:
 {
