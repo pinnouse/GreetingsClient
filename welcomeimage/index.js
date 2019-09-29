@@ -7,7 +7,7 @@ Vue.component('text-layer-item', {
   template: '\
     <li>\
       <span class="hoverable" @click="$emit(\'edit\')"><b>{{index+1}}:</b> {{ text }}</span>\
-      <button class="delete hoverable" @click="$emit(\'remove\')">&times;</button>\
+      <button class="delete hoverable" @click="$emit(\'remove\', $event)">&times;</button>\
     </li>\
   ',
   props: ['text', 'index']
@@ -24,7 +24,7 @@ Vue.component('modal', {
   </div>\
   ',
   props: ['message']
-})
+});
 
 var vm = new Vue({
   el: '#editor',
@@ -35,10 +35,12 @@ var vm = new Vue({
       {
         text: '{{userTag}}',
         textPosition: {
-          x: 20,
-          y: 265
+          position: {
+            x: 20,
+            y: 265
+          },
+          alignment: "LEFT"
         },
-        alignment: "LEFT",
         fontUrl: "Noto",
         fontColor: "#ededdf",
         fontStyle: 0,
@@ -47,10 +49,12 @@ var vm = new Vue({
       {
         text: 'joined the server!',
         textPosition: {
-          x: 20,
-          y: 300
+          position: {
+            x: 20,
+            y: 300
+          },
+          alignment: "LEFT"
         },
-        alignment: "LEFT",
         fontUrl: "Italianate",
         fontColor: "#ededdf",
         fontStyle: 0,
@@ -59,10 +63,12 @@ var vm = new Vue({
       {
         text: '{{members}}',
         textPosition: {
-          x: 20,
-          y: 440
+          position: {
+            x: 20,
+            y: 440
+          },
+          alignment: "LEFT"
         },
-        alignment: "LEFT",
         fontUrl: "Noto",
         fontColor: "#ededdf",
         fontStyle: 1,
@@ -71,10 +77,12 @@ var vm = new Vue({
       {
         text: 'Darlings in the Server <3',
         textPosition: {
-          x: 20,
-          y: 475
+          position: {
+            x: 20,
+            y: 475
+          },
+          alignment: "LEFT"
         },
-        alignment: "LEFT",
         fontUrl: "Noto",
         fontColor: "#ededdf",
         fontStyle: 1,
@@ -142,16 +150,19 @@ var vm = new Vue({
       }, false);
       fr.readAsDataURL(event.target.files[0]);
     },
-    addLayer() {
+    addLayer(e) {
+      e.preventDefault();
       if ($('.noImage').length === 0) {
         this.layers.push({
           text: 'New Text Layer...',
           textPosition: {
-            x: 0,
-            y: 36
+            position: {
+              x: 0,
+              y: 36
+            },
+            alignment: "LEFT"
           },
-          alignment: "LEFT",
-          fontUrl: "",
+          fontUrl: fonts[0] || "",
           fontColor: "#ffffff",
           fontStyle: 0,
           fontSize: 36.0
@@ -162,7 +173,8 @@ var vm = new Vue({
     edit(index) {
       this.activeLayer = index;
     },
-    remove(index) {
+    remove(e, index) {
+      e.preventDefault();
       if (index === this.activeLayer)
         this.activeLayer = -1;
       else if (index < this.activeLayer)
@@ -174,8 +186,8 @@ var vm = new Vue({
       this.activeLayer = this.draggingIndex = index;
       if (index >= 0) {
         this.offset = [
-          this.layers[this.draggingIndex].textPosition.x - (2 * event.clientX),
-          this.layers[this.draggingIndex].textPosition.y - (2 * event.clientY)
+          this.layers[this.draggingIndex].textPosition.position.x - (2 * event.clientX),
+          this.layers[this.draggingIndex].textPosition.position.y - (2 * event.clientY)
         ];
       } else if (index === -1) {
           this.offset = [
@@ -187,8 +199,8 @@ var vm = new Vue({
     },
     move(event) {
       if (this.draggingIndex < this.layers.length && this.draggingIndex >= 0) {
-        this.layers[this.draggingIndex].textPosition.x = (2 * event.clientX) + this.offset[0];
-        this.layers[this.draggingIndex].textPosition.y = (2 * event.clientY) + this.offset[1];
+        this.layers[this.draggingIndex].textPosition.position.x = (2 * event.clientX) + this.offset[0];
+        this.layers[this.draggingIndex].textPosition.position.y = (2 * event.clientY) + this.offset[1];
       } else if (this.draggingIndex === -1) {
         this.avatar.position.x = (2 * event.clientX) + this.offset[0];
         this.avatar.position.y = (2 * event.clientY) + this.offset[1];
@@ -210,11 +222,15 @@ var vm = new Vue({
   },
   computed: {
     exportData: function() {
+      let exportLayers = this.layers;
+      exportLayers.forEach(layerData => {
+        layerData.fontUrl = `%${layerData.fontUrl}%`;
+      });
       return {
         width: 1200,
         height: Math.round($('#backgroundPreview').height() * 2),
         avatar: this.avatar,
-        textPositions: this.layers
+        textPositions: exportLayers
       };
     },
     exportFiles: function() {
