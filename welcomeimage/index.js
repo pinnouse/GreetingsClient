@@ -125,30 +125,42 @@ var vm = new Vue({
 
       this.exportSrc = canvas.toDataURL();
     },
-    addFont(event) {
-      if (event.target.files.length <= 0 && !/\.ttf$/i.test(event.target.files[0].name)) return;
-
-      let fr = new FileReader();
-      
-      fr.addEventListener('load', function() {
-        let fontName = event.target.files[0].name.replace(/\.ttf$/i, "") + "-font";
-        event.target.value = "";
-        if (vm.fonts.indexOf(fontName) >= 0) {
-          vm.showModal('Font with that name already exists.');
-          return;
-        }
-
-        vm.fonts.push(fontName);
-        vm.fontData.push({name: fontName, data: fr.result });
+    addFont(data) {
+      if (typeof(data) === "object" && data.target) {
+        if (data.target.files.length <= 0 && !/\.ttf$/i.test(data.target.files[0].name)) return;
+  
+        let fr = new FileReader();
+        
+        fr.addEventListener('load', function() {
+          let fontName = data.target.files[0].name.replace(/\.ttf$/i, "") + "-font";
+          data.target.value = "";
+          if (vm.fonts.indexOf(fontName) >= 0) {
+            vm.showModal('Font with that name already exists.');
+            return;
+          }
+  
+          vm.fonts.push(fontName);
+          vm.fontData.push({name: fontName, data: fr.result });
+          let font = new FontFace(fontName, 'url(' + fr.result + ')');
+          font.load().then(function(loadedFont) {
+            document.fonts.add(loadedFont);
+          }).catch(function(error) {
+            console.error(error);
+            vm.showModal('Error loading font, please try again.');
+          });
+        }, false);
+        fr.readAsDataURL(event.target.files[0]);
+      } else if (typeof(data) === "string" && /^http[s]?/i.test(data)) {
+        vm.fonts.push(data);
+        vm.fontData.push({name: data, data: data});
         let font = new FontFace(fontName, 'url(' + fr.result + ')');
         font.load().then(function(loadedFont) {
           document.fonts.add(loadedFont);
         }).catch(function(error) {
           console.error(error);
-          vm.showModal('Error loading font, please try again.');
+          vm.showModal('Erorr loading font, please try again.');
         });
-      }, false);
-      fr.readAsDataURL(event.target.files[0]);
+      }
     },
     addLayer(e) {
       e.preventDefault();
@@ -253,6 +265,13 @@ $(function () {
 
 function importSettings(str) {
   let importSettings = JSON.parse(str);
+  importSettings.textPositions.forEach(layer => {
+    if (vm.fonts.indexOf(layer.fontUrl) < 0) {
+      addFont(layer.fontUrl);
+    }
+  });
+  vm.bgSrc = importSettings.backgroundUrl;
+  vm.avatar = importSettings.avatar;
 }
 
 /* Schema:
