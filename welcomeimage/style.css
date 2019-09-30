@@ -157,13 +157,9 @@ select option {
 
 #editContainer > img#backgroundPreview {
     position: relative;
-    top: 12px;
-    left: 12px;
     width: 600px;
     pointer-events: none;
     user-select: none;
-    margin-top: -12px;
-    margin-left: -24px;
 }
 
 img.noImage {
