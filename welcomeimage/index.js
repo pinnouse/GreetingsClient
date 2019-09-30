@@ -29,7 +29,7 @@ Vue.component('modal', {
 var vm = new Vue({
   el: '#editor',
   data: {
-    bgSrc: "https://cdn.zerotwo.dev/INTERNAL/GREETING/welcome_blank.png",
+    bgSrc: "https://cdn.zerotwo.dev/INTERNAL/GREETING/example.jpg",
     exportSrc: "",
     layers: [
       {
@@ -104,12 +104,12 @@ var vm = new Vue({
 			}
     ],
     avatar: {
-      size: 200,
-      position: {
-        x: 20,
-        y: 20
-      }
-    },
+			size: 200,
+			position: {
+				x: 500,
+				y: 20
+			}
+		},
 		fonts: ["Noto"],
 		fontData: [{name: "Noto", data: "https://cdn.zerotwo.dev/INTERNAL/GREETING/Noto.ttf"}],
 		activeLayer: 0,
@@ -134,6 +134,8 @@ var vm = new Vue({
     loadedImage() {
       canvas.width = 1200;
       canvas.height = $('#backgroundPreview').height() * 2;
+
+      let img = document.getElementById('backgroundPreview');
 
       ctx.drawImage(img, 0, 0, 1200, $('#backgroundPreview').height() * 2);
 
@@ -241,16 +243,18 @@ var vm = new Vue({
     },
     parseMoustache(text) {
       return text
-      .replace(/\{\{(\\s)*members(\\s)*\}\}/gim, '1459')
-      .replace(/\{\{(\\s)*userTag(\\s)*\}\}/gim, 'username#0002');
+        .replace(/{{(\s)server(\s)}}/gim, 'ZeroTwo-Bot')
+        .replace(/{{(\s)user(\s)}}/gim, 'username')
+        .replace(/{{(\s)disc(\s)}}/gim, '0002')
+        .replace(/{{(\s)members(\s)}}/gim, '1459')
+        .replace(/{{(\s)userTag(\s)}}/gim, 'username#0002');
+
     },
     showModal(message) {
       this.modalMessage = message;
       this.modalVisible = true;
-    }
-  },
-  computed: {
-    exportData: function() {
+    },
+    exportData() {
       return {
         width: 1200,
         height: Math.round(canvas.height),
@@ -258,12 +262,11 @@ var vm = new Vue({
         textPositions: this.layers
       };
     },
-    exportFiles: function() {
+    exportFiles() {
       return {
         background: this.exportSrc || this.bgSrc,
         fonts: this.fontData
       };
-
     }
   }
 });
@@ -278,6 +281,14 @@ $(function () {
   $('html').keyup(function(e) {
     if (e.code == "Escape") {
       vm.modalVisible = false;
+    }
+  });
+
+  $('#backgroundPreview').on('load', () => {
+    vm.loadedImage();
+  }).each(() => {
+    if (this.complete) {
+      $(this).load();
     }
   });
 });
