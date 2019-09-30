@@ -33,61 +33,75 @@ var vm = new Vue({
     exportSrc: "",
     layers: [
       {
-        text: '{{userTag}}',
-        textPosition: {
-          position: {
-            x: 20,
-            y: 265
-          },
-          alignment: "LEFT"
-        },
-        fontUrl: "Noto",
-        fontColor: "#ededdf",
-        fontStyle: 0,
-        fontSize: 42.0
-      },
-      {
-        text: 'joined the server!',
-        textPosition: {
-          position: {
-            x: 20,
-            y: 300
-          },
-          alignment: "LEFT"
-        },
-        fontUrl: "Italianate",
-        fontColor: "#ededdf",
-        fontStyle: 0,
-        fontSize: 34.0
-      },
-      {
-        text: '{{members}}',
-        textPosition: {
-          position: {
-            x: 20,
-            y: 440
-          },
-          alignment: "LEFT"
-        },
-        fontUrl: "Noto",
-        fontColor: "#ededdf",
-        fontStyle: 1,
-        fontSize: 42.0
-      },
-      {
-        text: 'Darlings in the Server <3',
-        textPosition: {
-          position: {
-            x: 20,
-            y: 475
-          },
-          alignment: "LEFT"
-        },
-        fontUrl: "Noto",
-        fontColor: "#ededdf",
-        fontStyle: 1,
-        fontSize: 36.0
-      }
+				text: '{{userTag}} joined the server!',
+				textPosition: {
+					position: {
+						x: 20,
+						y: 100
+					},
+					alignment: "LEFT"
+				},
+				fontUrl: "Noto",
+				fontColor: "#ff21a9",
+				fontStyle: 0,
+				fontSize: 34.0
+			},
+			{
+				text: 'Server Name: {{server}}',
+				textPosition: {
+					position: {
+						x: 20,
+						y: 150
+					},
+					alignment: "LEFT"
+				},
+				fontUrl: "Noto",
+				fontColor: "#ff21a9",
+				fontStyle: 1,
+				fontSize: 42.0
+			},
+			{
+				text: 'Member count: {{members}}',
+				textPosition: {
+					position: {
+						x: 20,
+						y: 200
+					},
+					alignment: "LEFT"
+				},
+				fontUrl: "Noto",
+				fontColor: "#ff21a9",
+				fontStyle: 1,
+				fontSize: 42.0
+			},
+			{
+				text: 'User without # {{user}}',
+				textPosition: {
+					position: {
+						x: 20,
+						y: 250
+					},
+					alignment: "LEFT"
+				},
+				fontUrl: "Noto",
+				fontColor: "#ff21a9",
+				fontStyle: 1,
+				fontSize: 36.0
+			},
+			{
+				text: 'Discriminator {{disc}}',
+				textPosition: {
+					position: {
+						x: 20,
+						y: 300
+					},
+					alignment: "LEFT"
+				},
+				fontUrl: "Noto",
+				fontColor: "#ff21a9",
+				fontStyle: 1,
+				fontSize: 36.0
+			}
     ],
     avatar: {
       size: 200,
@@ -96,13 +110,13 @@ var vm = new Vue({
         y: 20
       }
     },
-    fonts: [],
-    fontData: [],
-    activeLayer: 0,
-    draggingIndex: -2,
-    offset: [],
-    modalVisible: false,
-    modalMessage: ""
+		fonts: ["Noto"],
+		fontData: [{name: "Noto", data: "https://cdn.zerotwo.dev/INTERNAL/GREETING/Noto.ttf"}],
+		activeLayer: 0,
+		draggingIndex: -2,
+		offset: [],
+		modalVisible: false,
+		modalMessage: ""
   },
   methods: {
     changeFile(event) {
@@ -125,7 +139,7 @@ var vm = new Vue({
 
       this.exportSrc = canvas.toDataURL();
     },
-    addFont(data) {
+    addFont(data, name) {
       if (typeof(data) === "object" && data.target) {
         if (data.target.files.length <= 0 && !/\.ttf$/i.test(data.target.files[0].name)) return;
   
@@ -151,11 +165,14 @@ var vm = new Vue({
         }, false);
         fr.readAsDataURL(event.target.files[0]);
       } else if (typeof(data) === "string" && /^http[s]?/i.test(data)) {
-        vm.fonts.push(data);
-        vm.fontData.push({name: data, data: data});
-        let font = new FontFace(data, 'url(' + data + ')');
+        if (vm.fonts.indexOf(name) >= 0) {
+          vm.fonts.push(name || data);
+          vm.fontData.push({name: name || data, data: data});
+        }
+        let font = new FontFace(name || data, 'url(' + data + ')');
         font.load().then(function(loadedFont) {
           document.fonts.add(loadedFont);
+          console.log(`loaded ${name}`);
         }).catch(function(error) {
           console.error(error);
           vm.showModal('Erorr loading font, please try again.');
@@ -252,6 +269,8 @@ var vm = new Vue({
 });
 
 $(function () {
+  vm.fontData.forEach(f => vm.addFont(f.data, f.name));
+
   $('.fileButton').click(function () {
     $(`#${$(this).attr('data-button-id')}`).click();
   });
