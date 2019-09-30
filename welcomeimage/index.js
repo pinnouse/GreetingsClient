@@ -307,7 +307,7 @@ function importSettings(str) {
       vm.addFont(layer.fontUrl);
     }
   });
-  vm.layers = importSettings.textPosition;
+  vm.layers = importSettings.textPositions;
   vm.bgSrc = importSettings.backgroundUrl;
   vm.avatar = importSettings.avatar;
 }
