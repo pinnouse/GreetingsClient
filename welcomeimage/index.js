@@ -236,7 +236,7 @@ var vm = new Vue({
     exportData: function() {
       return {
         width: 1200,
-        height: Math.round($('#backgroundPreview').height() * 2),
+        height: Math.round(canvas.height),
         avatar: this.avatar,
         textPositions: this.layers
       };
