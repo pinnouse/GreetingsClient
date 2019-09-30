@@ -42,10 +42,15 @@ input[type="number"] {
     width: 52px;
 }
 
+/* Remove the buttons up and down */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+input [type="number"] {
+    -moz-appearance: textfield;
 }
 
 input[type="file"] {
@@ -151,12 +156,14 @@ select option {
 }
 
 #editContainer > img#backgroundPreview {
-    position: absolute;
+    position: relative;
     top: 12px;
     left: 12px;
     width: 600px;
     pointer-events: none;
     user-select: none;
+    margin-top: -12px;
+    margin-left: -24px;
 }
 
 img.noImage {
@@ -201,7 +208,7 @@ img.noImage {
     border-radius: 4px;
     padding: 10px;
     margin: 0 0 20px 0;
-    max-height: 420px; /* nice */
+    height: 420px; /* nice */
     overflow-y: auto;
 }
 
@@ -233,7 +240,7 @@ img.noImage {
     display: block;
     padding: 0;
     margin: 0;
-    height: 300px;
+    height: 320px;
     overflow-y: auto;
 }
 
@@ -282,14 +289,12 @@ img.noImage {
     color: #fff;
 }
 
+.layer .delete:focus {
+    outline: none;
+}
+
 @media only screen and (max-width: 1349px) {
     div#editContainer {
         overflow-x: unset;
-    }
-
-    div#editContainer #backgroundPreview {
-        position: relative;
-        margin-top: -12px;
-        margin-left: -24px;
     }
 }

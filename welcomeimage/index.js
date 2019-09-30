@@ -111,12 +111,13 @@ var vm = new Vue({
 			}
 		},
 		fonts: ["Noto"],
-		fontData: [{name: "Noto", data: "https://cdn.zerotwo.dev/INTERNAL/GREETING/Noto.ttf"}],
+    fontData: [{name: "Noto", data: "https://cdn.zerotwo.dev/INTERNAL/GREETING/Noto.ttf"}],
 		activeLayer: 0,
 		draggingIndex: -2,
 		offset: [],
 		modalVisible: false,
-		modalMessage: ""
+    modalMessage: "",
+    imageScale: 1
   },
   methods: {
     changeFile(event) {
@@ -135,11 +136,18 @@ var vm = new Vue({
       canvas.width = 1200;
       canvas.height = $('#backgroundPreview').height() * 2;
 
+      
       let img = document.getElementById('backgroundPreview');
+      
+      this.iamgeScale = 1200 / img.naturalWidth;
 
       ctx.drawImage(img, 0, 0, 1200, $('#backgroundPreview').height() * 2);
 
-      this.exportSrc = canvas.toDataURL();
+      try {
+        this.exportSrc = canvas.toDataURL();
+      } catch(e) {
+        // Stupid annoying error thing.
+      }
     },
     addFont(data, name) {
       if (typeof(data) === "object" && data.target) {
@@ -174,7 +182,6 @@ var vm = new Vue({
         let font = new FontFace(name || data, 'url(' + data + ')');
         font.load().then(function(loadedFont) {
           document.fonts.add(loadedFont);
-          console.log(`loaded ${name}`);
         }).catch(function(error) {
           console.error(error);
           vm.showModal('Erorr loading font, please try again.');
@@ -193,7 +200,7 @@ var vm = new Vue({
             },
             alignment: "LEFT"
           },
-          fontUrl: fonts[0] || "",
+          fontUrl: this.fonts[0] || "",
           fontColor: "#ffffff",
           fontStyle: 0,
           fontSize: 36.0
@@ -243,11 +250,11 @@ var vm = new Vue({
     },
     parseMoustache(text) {
       return text
-        .replace(/{{(\s)server(\s)}}/gim, 'ZeroTwo-Bot')
-        .replace(/{{(\s)user(\s)}}/gim, 'username')
-        .replace(/{{(\s)disc(\s)}}/gim, '0002')
-        .replace(/{{(\s)members(\s)}}/gim, '1459')
-        .replace(/{{(\s)userTag(\s)}}/gim, 'username#0002');
+        .replace(/{{(\\s)*server(\\s)*}}/gim, 'ZeroTwo-Bot')
+        .replace(/{{(\\s)*user(\\s)*}}/gim, 'username')
+        .replace(/{{(\\s)*disc(\\s)*}}/gim, '0002')
+        .replace(/{{(\\s)*members(\\s)*}}/gim, '1459')
+        .replace(/{{(\\s)*userTag(\\s)*}}/gim, 'username#0002');
 
     },
     showModal(message) {
@@ -264,7 +271,7 @@ var vm = new Vue({
     },
     exportFiles() {
       return {
-        background: this.exportSrc || this.bgSrc,
+        background: (this.exportSrc || !/^http[s]?/i.test(this.bgSrc)) ? this.exportSrc : this.bgSrc,
         fonts: this.fontData
       };
     }
@@ -300,6 +307,7 @@ function importSettings(str) {
       vm.addFont(layer.fontUrl);
     }
   });
+  vm.layers = importSettings.textPosition;
   vm.bgSrc = importSettings.backgroundUrl;
   vm.avatar = importSettings.avatar;
 }
