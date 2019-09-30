@@ -153,7 +153,7 @@ var vm = new Vue({
       } else if (typeof(data) === "string" && /^http[s]?/i.test(data)) {
         vm.fonts.push(data);
         vm.fontData.push({name: data, data: data});
-        let font = new FontFace(fontName, 'url(' + fr.result + ')');
+        let font = new FontFace(data, 'url(' + data + ')');
         font.load().then(function(loadedFont) {
           document.fonts.add(loadedFont);
         }).catch(function(error) {
@@ -267,7 +267,7 @@ function importSettings(str) {
   let importSettings = JSON.parse(str);
   importSettings.textPositions.forEach(layer => {
     if (vm.fonts.indexOf(layer.fontUrl) < 0) {
-      addFont(layer.fontUrl);
+      vm.addFont(layer.fontUrl);
     }
   });
   vm.bgSrc = importSettings.backgroundUrl;
