@@ -11,8 +11,8 @@ input:focus {
     outline: none;
 }
 
-input[type="text"],
-input[type="number"],
+input[type=text],
+input[type=number],
 select {
     position: relative;
     color: #fff;
@@ -24,36 +24,33 @@ select {
     transition: 120ms;
 }
 
-input[type="text"]:hover,
-input[type="number"]:hover,
+input[type=text]:hover,
+input[type=number]:hover,
 select:hover {
     background: #25375e40;
     border-bottom-color: #2c3446;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
+input[type=text]:focus,
+input[type=number]:focus,
 select:focus {
     background: #25375e80;
     border-bottom-color: #fff;
 }
 
-input[type="number"] {
-    width: 52px;
+input[type=number] {
+    width: 58px;
+    -moz-appearance: textfield;
 }
 
 /* Remove the buttons up and down */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-input [type="number"] {
-    -moz-appearance: textfield;
-}
-
-input[type="file"] {
+input[type=file] {
     position: absolute;
     width: 0.1px;
     height: 0.1px;
