@@ -99,7 +99,7 @@
                         <br />
                         <span>Font:
                             <select v-model="layers[activeLayer].fontUrl">
-                                <option v-for="font in fonts" :value="font">{{ font.replace("-font$", "") }}</option>
+                                <option v-for="font in fonts" :value="font">{{ font.replace(/^font\-/, "") }}</option>
                             </select>
                         </span>
                         <br />

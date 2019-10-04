@@ -169,7 +169,7 @@ var vm = new Vue({
         let fr = new FileReader();
         
         fr.addEventListener('load', function() {
-          let fontName = data.target.files[0].name.replace(/\.ttf$/i, "") + "-font";
+          let fontName = name || "font-" + data.target.files[0].name.replace(/\.ttf$/i, "");
           data.target.value = "";
           if (vm.fonts.indexOf(fontName) >= 0) {
             vm.showModal('Font with that name already exists.');
@@ -178,7 +178,7 @@ var vm = new Vue({
   
           vm.fonts.push(fontName);
           vm.fontData.push({name: fontName, data: fr.result });
-          let font = new FontFace(fontName, 'url(' + fr.result + ')');
+          let font = new FontFace(fontName, `url(${fr.result}) format('ttf')`);
           font.load().then(function(loadedFont) {
             document.fonts.add(loadedFont);
           }).catch(function(error) {
@@ -188,12 +188,14 @@ var vm = new Vue({
         }, false);
         fr.readAsDataURL(event.target.files[0]);
       } else if (typeof(data) === "string" && /^http[s]?:/i.test(data)) {
-        name = name || /([a-z0-9\-]+)\.ttf$/i.exec(data)[1] || data;
+        name = name || 'font-' + (/([a-z0-9\-]+)\.ttf$/i.exec(data)[1] || data);
         if (vm.fonts.indexOf(name) < 0) {
           vm.fonts.push(name || data);
           vm.fontData.push({name: name || data, data: data});
         }
-        let font = new FontFace(name || data, 'url(' + data + ')');
+        let esc = new RegExp("\\/", "g");
+        data = data.replace(esc, "\/");
+        let font = new FontFace(name || data, `url(${data})`);
         font.load().then(function(loadedFont) {
           document.fonts.add(loadedFont);
         }).catch(function(error) {
