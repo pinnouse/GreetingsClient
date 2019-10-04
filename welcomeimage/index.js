@@ -118,7 +118,14 @@ var vm = new Vue({
 		modalVisible: false,
     modalMessage: "",
     imageScale: 1,
-    expProps: []
+    expProps: [],
+    vars: {
+        username: "ByteAlex",
+        discriminator: "1644",
+        userTag: "ByteAlex#1644",
+        serverName: "ZeroTwo-Bot",
+        members: "3600"
+    }
   },
   watch: {
     layers: {
@@ -268,11 +275,11 @@ var vm = new Vue({
     },
     parseMoustache(text) {
       return text
-        .replace(/{{(\\s)*server(\\s)*}}/gim, 'ZeroTwo-Bot')
-        .replace(/{{(\\s)*user(\\s)*}}/gim, 'username')
-        .replace(/{{(\\s)*disc(\\s)*}}/gim, '0002')
-        .replace(/{{(\\s)*members(\\s)*}}/gim, '1459')
-        .replace(/{{(\\s)*userTag(\\s)*}}/gim, 'username#0002');
+        .replace(/{{(\\s)*server(\\s)*}}/gim, this.vars.serverName)
+        .replace(/{{(\\s)*user(\\s)*}}/gim, this.vars.username)
+        .replace(/{{(\\s)*disc(\\s)*}}/gim, this.vars.discriminator)
+        .replace(/{{(\\s)*members(\\s)*}}/gim, this.vars.members)
+        .replace(/{{(\\s)*userTag(\\s)*}}/gim, this.vars.userTag);
 
     },
     showModal(message) {
@@ -342,6 +349,10 @@ function importSettings(str) {
   vm.layers = importSettings.textPositions;
   vm.bgSrc = importSettings.backgroundUrl;
   vm.avatar = importSettings.avatar;
+}
+
+function setVariableField(field, value) {
+  vm.vars[field] = value;
 }
 
 /* Schema:
