@@ -176,8 +176,8 @@ var vm = new Vue({
         let fr = new FileReader();
         
         let fontName = name || "font-" + data.target.files[0].name.replace(/\.ttf$/i, "");
-        data.target.value = "";
         fr.addEventListener('load', function() {
+          data.target.value = "";
           if (vm.fonts.indexOf(fontName) >= 0) {
             vm.showModal('Font with that name already exists.');
             return;
@@ -185,7 +185,7 @@ var vm = new Vue({
   
           vm.fonts.push(fontName);
           vm.fontData.push({name: fontName, data: fr.result });
-          let font = new FontFace(fontName, `url(${fr.result}) format('ttf')`);
+          let font = new FontFace(fontName, `url(${fr.result})`);
           font.load().then(function(loadedFont) {
             document.fonts.add(loadedFont);
           }).catch(function(error) {
