@@ -4,6 +4,7 @@
 
 <head>
     <link rel="stylesheet" href="style.css" type="text/css" />
+    <meta charset="utf8">
 </head>
 
 <body>
@@ -98,7 +99,7 @@
                         <br />
                         <span>Font:
                             <select v-model="layers[activeLayer].fontUrl">
-                                <option v-for="font in fonts" :value="font">{{ font.replace("-font", "") }}</option>
+                                <option v-for="font in fonts" :value="font">{{ font.replace("-font$", "") }}</option>
                             </select>
                         </span>
                         <br />
@@ -145,6 +146,7 @@
     </div>
     <input type="submit" class="fileButton hoverable" value="Save">
 
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-color-picker-wheel"></script>
     <script src="index.js"></script>

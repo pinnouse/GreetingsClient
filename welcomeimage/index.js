@@ -117,7 +117,20 @@ var vm = new Vue({
 		offset: [],
 		modalVisible: false,
     modalMessage: "",
-    imageScale: 1
+    imageScale: 1,
+    expProps: []
+  },
+  watch: {
+    layers: {
+      handler: function(newLayers, oldLayers) {
+        this.debouncedUpdateLayers();
+      },
+      deep: true,
+    }
+  },
+  created: function() {
+    this.expProps = this.layers;
+    this.debouncedUpdateLayers = _.debounce(this.updateLayers, 400);
   },
   methods: {
     changeFile(event) {
@@ -174,8 +187,9 @@ var vm = new Vue({
           });
         }, false);
         fr.readAsDataURL(event.target.files[0]);
-      } else if (typeof(data) === "string" && /^http[s]?/i.test(data)) {
-        if (vm.fonts.indexOf(name) >= 0) {
+      } else if (typeof(data) === "string" && /^http[s]?:/i.test(data)) {
+        name = name || /([a-z0-9\-]+)\.ttf$/i.exec(data)[1] || data;
+        if (vm.fonts.indexOf(name) < 0) {
           vm.fonts.push(name || data);
           vm.fontData.push({name: name || data, data: data});
         }
@@ -266,14 +280,28 @@ var vm = new Vue({
         width: 1200,
         height: Math.round(canvas.height),
         avatar: this.avatar,
-        textPositions: this.layers
+        textPositions: this.expProps
       };
     },
     exportFiles() {
       return {
-        background: (this.exportSrc || !/^http[s]?/i.test(this.bgSrc)) ? this.exportSrc : this.bgSrc,
+        background: (this.exportSrc || !/^http[s]?:/i.test(this.bgSrc)) ? this.exportSrc : this.bgSrc,
         fonts: this.fontData
       };
+    },
+    updateLayers() {
+      let l = [];
+      _.cloneDeep(this.layers).forEach(el => {
+        let fData = this.fontData.find(f => { return f.name == el.fontUrl });
+        if (fData) {
+          if (/^http[s]?:/i.test(fData.data)) {
+            el.fontUrl = fData.data.replace(/\//g, "\\/");
+          }
+        }
+
+        l.push(el);
+      });
+      this.expProps = l;
     }
   }
 });
