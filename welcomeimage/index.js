@@ -168,9 +168,9 @@ var vm = new Vue({
   
         let fr = new FileReader();
         
+        let fontName = name || "font-" + data.target.files[0].name.replace(/\.ttf$/i, "");
+        data.target.value = "";
         fr.addEventListener('load', function() {
-          let fontName = name || "font-" + data.target.files[0].name.replace(/\.ttf$/i, "");
-          data.target.value = "";
           if (vm.fonts.indexOf(fontName) >= 0) {
             vm.showModal('Font with that name already exists.');
             return;
@@ -187,6 +187,7 @@ var vm = new Vue({
           });
         }, false);
         fr.readAsDataURL(event.target.files[0]);
+        return fontName;
       } else if (typeof(data) === "string" && /^http[s]?:/i.test(data)) {
         name = name || 'font-' + (/([a-z0-9\-]+)\.ttf$/i.exec(data)[1] || data);
         if (vm.fonts.indexOf(name) < 0) {
@@ -202,6 +203,7 @@ var vm = new Vue({
           console.error(error);
           vm.showModal('Erorr loading font, please try again.');
         });
+        return name;
       }
     },
     addLayer(e) {
@@ -334,7 +336,7 @@ function importSettings(str) {
   let importSettings = JSON.parse(str);
   importSettings.textPositions.forEach(layer => {
     if (vm.fonts.indexOf(layer.fontUrl) < 0) {
-      vm.addFont(layer.fontUrl);
+      layer.fontUrl = vm.addFont(layer.fontUrl);
     }
   });
   vm.layers = importSettings.textPositions;
