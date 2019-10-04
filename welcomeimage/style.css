@@ -207,10 +207,18 @@ img.noImage {
 
 .box.withInner {
     display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .innerBox {
     margin: 0 20px;
+    width: 45%;
+}
+
+.innerBox > h2,
+.innerBox h3 {
+    margin: 5px 0;
 }
 
 #textProperties span {
@@ -289,5 +297,9 @@ img.noImage {
 @media only screen and (max-width: 1349px) {
     div#editContainer {
         overflow-x: unset;
+    }
+
+    #rightBar {
+        width: 100%;
     }
 }
