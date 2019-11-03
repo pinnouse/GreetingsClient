@@ -31,7 +31,8 @@
             :height="avatar.size / 2"
             :style="{
                 top: avatar.position.y / 2 + 12 + 'px',
-                left: avatar.position.x / 2 + 12 + 'px'
+                left: avatar.position.x / 2 + 12 + 'px',
+                'border-radius': avatar.roundedPixels + 'px'
             }"
             @mousedown="startMove($event, -1)" />
             <div id="textBoxes">
@@ -74,6 +75,8 @@
                     <span>Y: <input type="number" v-model="avatar.position.y"></span>
                     <br />
                     <span>Size: <input type="number" v-model="avatar.size"></span>
+                    <br />
+                    <span>Rounding: <input type="number" v-model="avatar.roundedPixels"></span>
                 </div>
                 <div class="innerBox">
 

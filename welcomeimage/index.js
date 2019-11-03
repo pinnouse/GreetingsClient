@@ -108,7 +108,8 @@ var vm = new Vue({
 			position: {
 				x: 500,
 				y: 20
-			}
+      },
+      roundedPixels: 0
 		},
 		fonts: ["Noto"],
     fontData: [{name: "Noto", data: "https://cdn.zerotwo.dev/INTERNAL/GREETING/Noto.ttf"}],
@@ -133,6 +134,13 @@ var vm = new Vue({
         this.debouncedUpdateLayers();
       },
       deep: true,
+    },
+    avatar:  {
+      handler: function(newA, oldA) {
+        if (newA.roundedPixels > newA.size * 2)
+          this.avatar.roundedPixels = newA.size * 2;
+      },
+      deep: true
     }
   },
   created: function() {
